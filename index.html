@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Quiz Application using Vue.js - ByteWebster</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css'>
+  <link rel="stylesheet" href="./style.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+  <section class="container">
+    <div class="questionBox" id="app">
+      <transition :duration="{ enter: 500, leave: 300 }" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut" mode="out-in">
+        <div class="questionContainer" v-if="questionIndex<quiz.questions.length" v-bind:key="questionIndex">
+          <header>
+            <h1 class="title is-6" style="font-family: arial;">Quiz Game For Praveen</h1>
+            <div class="progressContainer">
+              <progress class="progress is-info is-small" :value="(questionIndex/quiz.questions.length)*100" max="100">{{(questionIndex/quiz.questions.length)*100}}%</progress>
+              <p>{{(questionIndex/quiz.questions.length)*100}}% complete</p>
+            </div>
+          </header>
+          <h2 class="titleContainer title">Q. {{ quiz.questions[questionIndex].text }}</h2>
+          <div class="optionContainer">
+            <div class="option" v-for="(response, index) in quiz.questions[questionIndex].responses" @click="selectOption(index)" :class="{ 'is-selected': userResponses[questionIndex] == index}" :key="index">
+              {{ index | charIndex }}. {{ response.text }}
+            </div>
+          </div>
+          <footer class="questionFooter">
+            <nav class="pagination" role="navigation" aria-label="pagination">
+              <a class="button" v-on:click="prev();" :disabled="questionIndex < 1">
+                <i class='bx bx-arrow-back'></i> Back
+              </a>
+              <a class="button" :class="(userResponses[questionIndex]==null)?'':'is-active'" v-on:click="next();" :disabled="questionIndex>=quiz.questions.length">
+                <i class='bx bx-skip-next' ></i> {{ (userResponses[questionIndex]==null)?'Skip':'Next' }}
+              </a>
+            </nav>
+          </footer>
+        </div>
+        <div v-if="questionIndex >= quiz.questions.length" v-bind:key="questionIndex" class="quizCompleted has-text-centered">
+          <span class="icon">
+            <i class="fa" :class="score()>3?'fa-check-circle-o is-active':'fa-times-circle'"></i>
+          </span>
+          <h2 class="title">
+            You did {{ (score()>7?'an amazing':(score()<4?'a poor':'a good')) }} job!
+          </h2>
+          <p class="subtitle">
+            Total score: {{ score() }} / {{ quiz.questions.length }}
+          </p>
+          <br>
+          <a class="button" @click="restart()">restart <i class="fa fa-refresh"></i></a>
+        </div>
+      </transition>
+    </div>
+  </section>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+  <script  src="./script.js"></script>
+</body>
+</html>
